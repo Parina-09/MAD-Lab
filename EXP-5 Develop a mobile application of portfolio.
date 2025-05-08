@@ -1,0 +1,69 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: ButtonTextScreen(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class ButtonTextScreen extends StatefulWidget {
+  @override
+  _ButtonTextScreenState createState() => _ButtonTextScreenState();
+}
+
+class _ButtonTextScreenState extends State<ButtonTextScreen> {
+  String text = "Press the Button";
+  void changeState(String newText) {
+    setState(() {
+      text = newText;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.pink,
+        title: Text("A good UI example app"),
+      ),
+      body: Container(
+        color: Colors.black,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset("assets/flower.jpg", height: 200, width: 200),
+              SizedBox(height: 20),
+              Text(
+                text,
+                style: TextStyle(fontSize: 30, color: Colors.white),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  changeState("Elevated Button is pressed!!");
+                },
+                child: Text("Elevated button"),
+              ),
+              SizedBox(height: 20),
+              TextButton(
+                onPressed: () {
+                  changeState("Text Button is pressed!!");
+                },
+                child: Text("Text button"),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
