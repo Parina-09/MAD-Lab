@@ -1,0 +1,131 @@
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+void main() {
+  runApp(MyApp());
+}
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: DataStorageScreen(),
+    );
+  }
+}
+class DataStorageScreen extends StatefulWidget {
+  @override
+  _DataStorageScreenState createState() => _DataStorageScreenState();
+}
+class _DataStorageScreenState extends State<DataStorageScreen> {
+  TextEditingController enrollmentController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController projectController = TextEditingController();
+  TextEditingController retrieveController = TextEditingController();
+  String studentDetails = '';
+  Future<void> saveStudentData(
+      String enrollment, String name, String project) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString(enrollment, '$name | $project');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Data saved successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving data: $e')),
+      );
+    }
+  }
+  Future<void> getStudentData(String enrollment) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? data = prefs.getString(enrollment);
+      setState(() {
+        studentDetails = data ?? 'No data found for this enrollment number.';
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error retrieving data: $e')),
+      );
+    }
+  }
+  Future<void> deleteStudentData(String enrollment) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.remove(enrollment);
+      setState(() {
+        studentDetails = 'Data deleted successfully!';
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error deleting data: $e')),
+      );
+    }
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Student Data Storage')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              buildTextField(enrollmentController, 'Enter Enrollment Number'),
+              SizedBox(height: 15),
+              buildTextField(nameController, 'Enter Student Name'),
+              SizedBox(height: 15),
+              buildTextField(projectController, 'Enter Project Title'),
+              SizedBox(height: 20),
+              buildButton('Save Data', () {
+                if (enrollmentController.text.isNotEmpty &&
+                    nameController.text.isNotEmpty &&
+                    projectController.text.isNotEmpty) {
+                  saveStudentData(enrollmentController.text,
+                      nameController.text, projectController.text);
+                }
+              }),
+              SizedBox(height: 30),
+              Text(
+                'Retrieve Data',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
+              buildTextField(retrieveController, 'Enter Enrollment Number'),
+              SizedBox(height: 15),
+              buildButton('Retrieve Data',
+                  () => getStudentData(retrieveController.text)),
+              SizedBox(height: 20),
+              buildButton('Delete Data',
+                  () => deleteStudentData(retrieveController.text)),
+              SizedBox(height: 30),
+              Text(
+                'Student Details: $studentDetails',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  Widget buildTextField(TextEditingController controller, String hintText) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: hintText,
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+  Widget buildButton(String text, VoidCallback onPressed) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(minimumSize: Size(double.infinity, 50)),
+      onPressed: onPressed,
+      child: Text(text),
+    );
+  }
+}
