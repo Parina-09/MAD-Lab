@@ -1,0 +1,263 @@
+Home Screen
+import 'package:flutter/material.dart';
+
+class HomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Home'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Welcome to My Portfolio!',
+              style: TextStyle(fontSize: 24.0),
+            ),
+            SizedBox(height: 20.0),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/portfolio_screen');
+              },
+              child: Text('View Portfolio'),
+            ),
+            SizedBox(height: 10.0),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/contact_screen');
+              },
+              child: Text('Contact Me'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+Portfolio Screen
+import 'package:flutter/material.dart';
+
+class PortfolioItemScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Portfolio Item'),
+        backgroundColor: Color(0xffbeb5ef), // Set AppBar color for consistency
+      ),
+      body: Padding(
+        padding:
+            const EdgeInsets.all(16.0), // Padding to make the UI more spacious
+        child: SingleChildScrollView(
+          // Make it scrollable if content overflows
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Profile Picture
+              Center(
+                child: CircleAvatar(
+                  radius: 60,
+                  backgroundImage: AssetImage(
+                      'assets/butterfly.png'), // Replace with your image path
+                ),
+              ),
+              SizedBox(height: 16),
+
+              // Title with improved styling
+              Center(
+                child: Text(
+                  'Parina Garg',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff3d3664),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16),
+
+              // Education section title
+              Text(
+                'Education',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff3d3664),
+                ),
+              ),
+              SizedBox(height: 16),
+
+              // Education details with Icon and text aligned
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.school, color: Colors.teal, size: 24),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'University: Vivekananda Institute of Professional Studies.',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+
+              // Skills section
+              Text(
+                'Skills',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff3d3664),
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                '• Flutter Development\n• Dart Programming\n• UI/UX Design',
+                style: TextStyle(fontSize: 16),
+              ),
+              SizedBox(height: 20),
+
+              // Projects Section
+              Text(
+                'Projects',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff3d3664),
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                '• Portfolio App\n• E-commerce App\n• Chat Application',
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+Contact Screen
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+class ContactScreen extends StatelessWidget {
+  // Function to launch a URL
+  Future<void> _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Contact'),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Contact Information',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.teal,
+            ),
+          ),
+          SizedBox(height: 40),
+          Row(
+            children: [
+              Icon(Icons.person, color: Colors.teal),
+              SizedBox(width: 10),
+              Text(
+                'Parina Garg',
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              Icon(Icons.email, color: Colors.teal),
+              SizedBox(width: 10),
+              InkWell(
+                onTap: () => _launchURL('mailto:03817711922_ds@vips.edu'),
+                child: Text(
+                  '02917711922_ds@vips.edu',
+                  style: TextStyle(fontSize: 16, color: Colors.blue),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              Icon(Icons.phone, color: Colors.teal),
+              SizedBox(width: 10),
+              InkWell(
+                onTap: () => _launchURL('tel:+919818xxxxxx'),
+                child: Text(
+                  '+91 9818xxxxxxx',
+                  style: TextStyle(fontSize: 16, color: Colors.blue),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              Icon(Icons.link, color: Colors.teal),
+              SizedBox(width: 10),
+              InkWell(
+                onTap: () => _launchURL('https://linkedin.com/in/parina-garg'),
+                child: Text(
+                  'linkedin.com/in/parina-garg',
+                  style: TextStyle(fontSize: 16, color: Colors.blue),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+Main File
+import 'package:flutter/material.dart';
+import 'home_screen.dart';
+import 'portfolio_screen.dart';
+import 'contact_screen.dart';
+void main() {
+  runApp(PortfolioApp());
+}
+class PortfolioApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      initialRoute: '/',
+      routes: {
+        '/': (context) => HomeScreen(),
+        '/portfolio_screen': (context) => PortfolioItemScreen(),
+        '/contact_screen': (context) => ContactScreen(),
+      },
+    );
+  }
+}
