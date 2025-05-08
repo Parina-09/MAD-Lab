@@ -1,0 +1,81 @@
+/"Add multimedia functionality to your mobile application"/
+import 'dart:typed_data';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:just_audio/just_audio.dart';
+
+void main() => runApp(SimpleMultimediaApp());
+
+class SimpleMultimediaApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: MultimediaPage(),
+    );
+  }
+}
+
+class MultimediaPage extends StatefulWidget {
+  @override
+  State<MultimediaPage> createState() => _MultimediaPageState();
+}
+
+class _MultimediaPageState extends State<MultimediaPage> {
+  Uint8List? _imageBytes;
+  final ImagePicker _picker = ImagePicker();
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
+  Future<void> _pickImage() async {
+    final file = await _picker.pickImage(source: ImageSource.gallery);
+    if (file != null) {
+      final bytes = await file.readAsBytes();
+      setState(() {
+        _imageBytes = bytes;
+      });
+    }
+  }
+
+  Future<void> _playAudio() async {
+    try {
+      await _audioPlayer.setUrl(
+        'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+      );
+      _audioPlayer.play();
+    } catch (_) {
+      // Optional: Handle audio error
+    }
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Multimedia Demo')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: _pickImage,
+              child: Text('Pick Image'),
+            ),
+            SizedBox(height: 10),
+            _imageBytes != null
+                ? Image.memory(_imageBytes!, width: 200, height: 200)
+                : Text('No image selected'),
+            Divider(height: 40),
+            ElevatedButton(
+              onPressed: _playAudio,
+              child: Text('Play Sample Audio'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
